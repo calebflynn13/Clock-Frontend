@@ -83,7 +83,7 @@ public class LineSegment {
 
     public String toString() {
         // return string "redColor, greenColor, blueColor"
-        return getColor().getRed() + ", " + getColor().getGreen() + ", " + getColor().getBlue();
+        return getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue() + ",";
     }
 
 }

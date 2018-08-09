@@ -180,6 +180,7 @@ public class ClockGui {
                 if(connectButton.getText().equals("Connect")) {
                     // attempt to connect to the serial port
                     chosenPort = SerialPort.getCommPort(portList.getSelectedItem().toString());
+                    chosenPort.setBaudRate(38400);
                     chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
                     if(chosenPort.openPort()) {
                         connectButton.setText("Disconnect");
@@ -205,89 +206,47 @@ public class ClockGui {
                                 try {Thread.sleep(2000); } catch(Exception e) {}
 
                                 // send LED commands
-                                String ledCommand = "";
+                                String ledCommand = "2:";
                                 // send first 2 numbers
                                 for (int i = 0; i < 9; i++) {
-                                    ledCommand = "2: ";
                                     ledCommand += ((i * 3) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
-                                    System.out.println(ledCommand);
-                                    output.print(ledCommand);
-                                    output.flush();
-                                    try {Thread.sleep(2000); } catch(Exception e) {}
 
-                                    ledCommand = "2: ";
                                     ledCommand += ((i * 3 + 1) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
-                                    System.out.println(ledCommand);
-                                    output.print(ledCommand);
-                                    output.flush();
-                                    try {Thread.sleep(2000); } catch(Exception e) {}
 
-                                    ledCommand = "2: ";
                                     ledCommand += ((i * 3 + 2) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
-                                    System.out.println(ledCommand);
-                                    output.print(ledCommand);
-                                    output.flush();
-                                    try {Thread.sleep(2000); } catch(Exception e) {}
                                 }
 
                                 // send colon
-                                ledCommand = "2: ";
                                 ledCommand += ((27) + ","); // LED #30
                                 ledCommand += (clock.segments.get(9).toString());
-                                System.out.println(ledCommand);
-                                output.print(ledCommand);
-                                output.flush();
-                                try {Thread.sleep(2000); } catch(Exception e) {}
 
-                                ledCommand = "2: ";
                                 ledCommand += ((28) + ","); //LED #31
                                 ledCommand += (clock.segments.get(10).toString());
-                                System.out.println(ledCommand);
-                                output.print(ledCommand);
-                                output.flush();
-                                try {Thread.sleep(2000); } catch(Exception e) {}
+
 
                                 //last 2 numbers
                                 for (int i = 11; i < 25; i++) {
-                                    ledCommand = "2: ";
                                     ledCommand += ((i * 3 - 4) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
-                                    System.out.println(ledCommand);
-                                    output.print(ledCommand);
-                                    output.flush();
-                                    try {Thread.sleep(2000); } catch(Exception e) {}
 
-                                    ledCommand = "2: ";
                                     ledCommand += ((i * 3 - 3) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
-                                    System.out.println(ledCommand);
-                                    output.print(ledCommand);
-                                    output.flush();
-                                    try {Thread.sleep(2000); } catch(Exception e) {}
 
-                                    ledCommand = "2: ";
                                     ledCommand += ((i * 3 - 2) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
-                                    System.out.println(ledCommand);
-                                    output.print(ledCommand);
-                                    output.flush();
-                                    try {Thread.sleep(2000); } catch(Exception e) {}
                                 }
 
                                 // AM/PM and reverse order Sat - Sun
                                 for (int i = 25; i < 34; i++) {
-                                    ledCommand = "2: ";
                                     ledCommand += ((46 + i) + ","); //LED #74 - 82
                                     ledCommand += (clock.segments.get(i).toString());
-                                    System.out.println(ledCommand);
-                                    output.print(ledCommand);
-                                    output.flush();
-                                    try {Thread.sleep(1000); } catch(Exception e) {}
                                 }
-
+                                System.out.println(ledCommand);
+                                output.print(ledCommand);
+                                output.flush();
                                 try {Thread.sleep(5000); } catch(Exception e) {}
                             }
                         };
