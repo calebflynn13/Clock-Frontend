@@ -11,7 +11,7 @@ public class Text extends LineSegment {
         this.idNum = idNum;
         this.x1 = 0;
         this.y1 = 0;
-        this.fontSize = 82;
+        this.fontSize = 70;
     }
 
     public void drawString(Graphics2D g2, String str, int x, int y) {

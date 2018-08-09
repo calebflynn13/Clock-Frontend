@@ -59,7 +59,6 @@ public class ClockGui {
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider)e.getSource();
                 int redValue = (int)source.getValue();
-                System.out.println("the red slider = " + redValue);
                 if (clock.getSelected() != null) {
                     for (LineSegment segment : clock.getSelected()) {
                         int greenComponent = segment.getColor().getGreen();
@@ -195,14 +194,100 @@ public class ClockGui {
                                 PrintWriter output = new PrintWriter(chosenPort.getOutputStream());
                                 // get the current time + 1 minute to send
                                 Date date = new Date();
-                                date = new Date(date.getTime() + 60000);
+                                date = new Date(date.getTime() + 60000); // add 1 minute to the time
                                 String strDateFormat = "hh:mma";
                                 DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
                                 String currentTime= dateFormat.format(date);
                                 System.out.println("time: " + currentTime);
                                 // actually send the current time
-                                output.print("time: " + currentTime);
+                                output.print("1: " + currentTime);
                                 output.flush();
+                                try {Thread.sleep(2000); } catch(Exception e) {}
+
+                                // send LED commands
+                                String ledCommand = "";
+                                // send first 2 numbers
+                                for (int i = 0; i < 9; i++) {
+                                    ledCommand = "2: ";
+                                    ledCommand += ((i * 3) + ",");
+                                    ledCommand += (clock.segments.get(i).toString());
+                                    System.out.println(ledCommand);
+                                    output.print(ledCommand);
+                                    output.flush();
+                                    try {Thread.sleep(2000); } catch(Exception e) {}
+
+                                    ledCommand = "2: ";
+                                    ledCommand += ((i * 3 + 1) + ",");
+                                    ledCommand += (clock.segments.get(i).toString());
+                                    System.out.println(ledCommand);
+                                    output.print(ledCommand);
+                                    output.flush();
+                                    try {Thread.sleep(2000); } catch(Exception e) {}
+
+                                    ledCommand = "2: ";
+                                    ledCommand += ((i * 3 + 2) + ",");
+                                    ledCommand += (clock.segments.get(i).toString());
+                                    System.out.println(ledCommand);
+                                    output.print(ledCommand);
+                                    output.flush();
+                                    try {Thread.sleep(2000); } catch(Exception e) {}
+                                }
+
+                                // send colon
+                                ledCommand = "2: ";
+                                ledCommand += ((27) + ","); // LED #30
+                                ledCommand += (clock.segments.get(9).toString());
+                                System.out.println(ledCommand);
+                                output.print(ledCommand);
+                                output.flush();
+                                try {Thread.sleep(2000); } catch(Exception e) {}
+
+                                ledCommand = "2: ";
+                                ledCommand += ((28) + ","); //LED #31
+                                ledCommand += (clock.segments.get(10).toString());
+                                System.out.println(ledCommand);
+                                output.print(ledCommand);
+                                output.flush();
+                                try {Thread.sleep(2000); } catch(Exception e) {}
+
+                                //last 2 numbers
+                                for (int i = 11; i < 25; i++) {
+                                    ledCommand = "2: ";
+                                    ledCommand += ((i * 3 - 4) + ",");
+                                    ledCommand += (clock.segments.get(i).toString());
+                                    System.out.println(ledCommand);
+                                    output.print(ledCommand);
+                                    output.flush();
+                                    try {Thread.sleep(2000); } catch(Exception e) {}
+
+                                    ledCommand = "2: ";
+                                    ledCommand += ((i * 3 - 3) + ",");
+                                    ledCommand += (clock.segments.get(i).toString());
+                                    System.out.println(ledCommand);
+                                    output.print(ledCommand);
+                                    output.flush();
+                                    try {Thread.sleep(2000); } catch(Exception e) {}
+
+                                    ledCommand = "2: ";
+                                    ledCommand += ((i * 3 - 2) + ",");
+                                    ledCommand += (clock.segments.get(i).toString());
+                                    System.out.println(ledCommand);
+                                    output.print(ledCommand);
+                                    output.flush();
+                                    try {Thread.sleep(2000); } catch(Exception e) {}
+                                }
+
+                                // AM/PM and reverse order Sat - Sun
+                                for (int i = 25; i < 34; i++) {
+                                    ledCommand = "2: ";
+                                    ledCommand += ((46 + i) + ","); //LED #74 - 82
+                                    ledCommand += (clock.segments.get(i).toString());
+                                    System.out.println(ledCommand);
+                                    output.print(ledCommand);
+                                    output.flush();
+                                    try {Thread.sleep(1000); } catch(Exception e) {}
+                                }
+
                                 try {Thread.sleep(5000); } catch(Exception e) {}
                             }
                         };
@@ -253,70 +338,4 @@ public class ClockGui {
         });
 
     }
-
-
-    //        // create and configure the window
-//        JFrame window = new JFrame();
-//        window.setTitle("Set Clock Colors");
-//        window.setSize(1200, 700);
-//        window.setLayout(new BorderLayout());
-//        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-//        // create a drop-down box and connect button, then place them at the top of the window
-//        JComboBox<String> portList = new JComboBox<String>();
-//        JButton connectButton = new JButton("Submit");
-//        JPanel topPanel = new JPanel();
-//        topPanel.add(portList);
-//        topPanel.add(connectButton);
-//        window.add(topPanel, BorderLayout.NORTH);
-//
-//        // populate the drop-down box
-//        SerialPort[] portNames = SerialPort.getCommPorts();
-//        for(int i = 0; i < portNames.length; i++)
-//            portList.addItem(portNames[i].getSystemPortName());
-//
-//        // configure the connect button and use another thread to send data
-//        connectButton.addActionListener(new ActionListener(){
-//            @Override public void actionPerformed(ActionEvent arg0) {
-//                if(connectButton.getText().equals("Submit")) {
-//                    // attempt to connect to the serial port
-//                    chosenPort = SerialPort.getCommPort(portList.getSelectedItem().toString());
-//                    chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
-//                    if(chosenPort.openPort()) {
-//                        connectButton.setText("Disconnect");
-//                        portList.setEnabled(false);
-//
-//                        // create a new thread for sending data to the arduino
-//                        Thread thread = new Thread(){
-//                            @Override public void run() {
-//                                // wait after connecting, so the bootloader can finish
-//                                try {Thread.sleep(5000); } catch(Exception e) {}
-//                                // send text to the arduino
-//                                PrintWriter output = new PrintWriter(chosenPort.getOutputStream());
-//                                // get the current time + 1 minute to send
-//                                Date date = new Date();
-//                                date = new Date(date.getTime() + 60000);
-//                                String strDateFormat = "hh:mma";
-//                                DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-//                                String currentTime= dateFormat.format(date);
-//                                System.out.println("current time = " + currentTime);
-//                                // actually send the current time
-//                                output.print(currentTime);
-//                                output.flush();
-//                                try {Thread.sleep(5000); } catch(Exception e) {}
-//                            }
-//                        };
-//                        thread.start();
-//                    }
-//                } else {
-//                    // disconnect from the serial port
-//                    chosenPort.closePort();
-//                    portList.setEnabled(true);
-//                    connectButton.setText("Connect");
-//                }
-//            }
-//        });
-//
-//        // show the window
-//        window.setVisible(true);
 }
