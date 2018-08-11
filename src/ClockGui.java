@@ -190,7 +190,7 @@ public class ClockGui {
                         Thread thread = new Thread(){
                             @Override public void run() {
                                 // wait after connecting, so the bootloader can finish
-                                try {Thread.sleep(5000); } catch(Exception e) {}
+                                try {Thread.sleep(8000); } catch(Exception e) {}
                                 // send text to the arduino
                                 PrintWriter output = new PrintWriter(chosenPort.getOutputStream());
                                 // get the current time + 1 minute to send
