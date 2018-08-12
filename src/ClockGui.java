@@ -162,8 +162,13 @@ public class ClockGui {
 
         // populate the drop-down box
         SerialPort[] portNames = SerialPort.getCommPorts();
-        for(int i = 0; i < portNames.length; i++)
+        for(int i = 0; i < portNames.length; i++) {
             portList.addItem(portNames[i].getSystemPortName());
+            System.out.println(portNames[i].getSystemPortName());
+            if (portNames[i].getSystemPortName().equals("cu.wchusbserial1410")) {
+                portList.setSelectedItem(portNames[i].getSystemPortName());
+            }
+        }
 
         //create button
         JButton connectButton = new JButton("Connect");
@@ -190,7 +195,7 @@ public class ClockGui {
                         Thread thread = new Thread(){
                             @Override public void run() {
                                 // wait after connecting, so the bootloader can finish
-                                try {Thread.sleep(8000); } catch(Exception e) {}
+                                try {Thread.sleep(6000); } catch(Exception e) {}
                                 // send text to the arduino
                                 PrintWriter output = new PrintWriter(chosenPort.getOutputStream());
 
@@ -201,7 +206,7 @@ public class ClockGui {
                                 output.flush();
                                 // TODO: SEND UNTIL WE GET POSITIVE RESPONSE BACK FROM ARDUINO
 
-                                try {Thread.sleep(5000); } catch(Exception e) {}
+                                try {Thread.sleep(1000); } catch(Exception e) {}
 
                                 // get the current time + 1 minute to send
                                 Date date = new Date();
@@ -213,7 +218,7 @@ public class ClockGui {
                                 // actually send the current time
                                 output.print("1: " + currentTime);
                                 output.flush();
-                                try {Thread.sleep(5000); } catch(Exception e) {}
+                                try {Thread.sleep(1000); } catch(Exception e) {}
 
                                 // send LED commands
                                 String ledCommand = "2:";
@@ -257,7 +262,7 @@ public class ClockGui {
                                 System.out.println(ledCommand);
                                 output.print(ledCommand);
                                 output.flush();
-                                try {Thread.sleep(5000); } catch(Exception e) {}
+                                try {Thread.sleep(2000); } catch(Exception e) {}
 
                                 // take arduino out of startup mode
                                 System.out.println("5:");
@@ -265,7 +270,7 @@ public class ClockGui {
                                 output.print("5:");
                                 output.flush();
 
-                                try {Thread.sleep(5000); } catch(Exception e) {}
+                                try {Thread.sleep(1000); } catch(Exception e) {}
                             }
                         };
                         thread.start();
