@@ -180,7 +180,7 @@ public class ClockGui {
                 if(connectButton.getText().equals("Connect")) {
                     // attempt to connect to the serial port
                     chosenPort = SerialPort.getCommPort(portList.getSelectedItem().toString());
-                    chosenPort.setBaudRate(38400);
+                    chosenPort.setBaudRate(9600);
                     chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
                     if(chosenPort.openPort()) {
                         connectButton.setText("Disconnect");
@@ -193,60 +193,78 @@ public class ClockGui {
                                 try {Thread.sleep(8000); } catch(Exception e) {}
                                 // send text to the arduino
                                 PrintWriter output = new PrintWriter(chosenPort.getOutputStream());
+
+                                // put the arduino in startUpMode
+                                System.out.println("Putting into setUpMode");
+                                System.out.println("4:");
+                                output.print("4:");
+                                output.flush();
+                                // TODO: SEND UNTIL WE GET POSITIVE RESPONSE BACK FROM ARDUINO
+
+                                try {Thread.sleep(5000); } catch(Exception e) {}
+
                                 // get the current time + 1 minute to send
                                 Date date = new Date();
                                 date = new Date(date.getTime() + 60000); // add 1 minute to the time
                                 String strDateFormat = "hh:mma";
                                 DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
                                 String currentTime= dateFormat.format(date);
-                                System.out.println("time: " + currentTime);
+                                System.out.println("1: " + currentTime);
                                 // actually send the current time
                                 output.print("1: " + currentTime);
                                 output.flush();
-                                try {Thread.sleep(2000); } catch(Exception e) {}
+                                try {Thread.sleep(5000); } catch(Exception e) {}
 
                                 // send LED commands
                                 String ledCommand = "2:";
                                 // send first 2 numbers
                                 for (int i = 0; i < 9; i++) {
-                                    ledCommand += ((i * 3) + ",");
+                                    // ledCommand += ((i * 3) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
 
-                                    ledCommand += ((i * 3 + 1) + ",");
+                                    // ledCommand += ((i * 3 + 1) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
 
-                                    ledCommand += ((i * 3 + 2) + ",");
+                                    // ledCommand += ((i * 3 + 2) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
                                 }
 
                                 // send colon
-                                ledCommand += ((27) + ","); // LED #30
+                                // ledCommand += ((27) + ","); // LED #30
                                 ledCommand += (clock.segments.get(9).toString());
 
-                                ledCommand += ((28) + ","); //LED #31
+                                // ledCommand += ((28) + ","); //LED #31
                                 ledCommand += (clock.segments.get(10).toString());
 
 
                                 //last 2 numbers
                                 for (int i = 11; i < 25; i++) {
-                                    ledCommand += ((i * 3 - 4) + ",");
+                                    // ledCommand += ((i * 3 - 4) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
 
-                                    ledCommand += ((i * 3 - 3) + ",");
+                                    // ledCommand += ((i * 3 - 3) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
 
-                                    ledCommand += ((i * 3 - 2) + ",");
+                                    // ledCommand += ((i * 3 - 2) + ",");
                                     ledCommand += (clock.segments.get(i).toString());
                                 }
 
                                 // AM/PM and reverse order Sat - Sun
                                 for (int i = 25; i < 34; i++) {
-                                    ledCommand += ((46 + i) + ","); //LED #74 - 82
+                                    // ledCommand += ((46 + i) + ","); //LED #74 - 82
                                     ledCommand += (clock.segments.get(i).toString());
                                 }
                                 System.out.println(ledCommand);
                                 output.print(ledCommand);
                                 output.flush();
+                                try {Thread.sleep(5000); } catch(Exception e) {}
+
+                                // take arduino out of startup mode
+                                System.out.println("5:");
+                                System.out.println("taking out of setUpMode");
+                                output.print("5:");
+                                output.flush();
+
                                 try {Thread.sleep(5000); } catch(Exception e) {}
                             }
                         };
