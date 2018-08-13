@@ -8,10 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ClockGui {
 
@@ -20,6 +16,8 @@ public class ClockGui {
     static JSlider redSlider;
     static JSlider greenSlider;
     static JSlider blueSlider;
+    static UpdateColors thread;
+    static String animation;
 
     public static void main(String[] args) {
         JFrame window = new JFrame();
@@ -36,18 +34,41 @@ public class ClockGui {
         clock = new PaintClock();
         c.gridx = 0;
         c.gridy = 0;
-        c.gridheight = 9;
+        c.gridheight = 11;
         c.gridwidth = 3;
         c.weightx = 1;
         c.weighty = 1;
         pane.add(clock, c);
+
+        JLabel animationLabel = new JLabel("Animation:", JLabel.CENTER);
+        animationLabel.setVerticalAlignment(JLabel.BOTTOM);
+        animationLabel.setVerticalTextPosition(JLabel.BOTTOM);
+        c.gridx = 3;
+        c.gridy = 0;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 0.1;
+        pane.add(animationLabel, c);
+
+        //create portlist dropdown
+        JComboBox<String> animationList = new JComboBox<String>();
+        c.gridx = 3;
+        c.gridy = 1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 0.1;
+        pane.add(animationList, c);
+
+        // populate the drop-down box
+        animationList.addItem("None");
+        animationList.addItem("Solid Rainbow");
 
         //create sliders
         JLabel redSliderLabel = new JLabel("Red", JLabel.CENTER);
         redSliderLabel.setVerticalAlignment(JLabel.BOTTOM);
         redSliderLabel.setVerticalTextPosition(JLabel.BOTTOM);
         c.gridx = 3;
-        c.gridy = 0;
+        c.gridy = 2;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -70,7 +91,7 @@ public class ClockGui {
             }
         });
         c.gridx = 3;
-        c.gridy = 1;
+        c.gridy = 3;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -81,7 +102,7 @@ public class ClockGui {
         greenSliderLabel.setVerticalAlignment(JLabel.BOTTOM);
         greenSliderLabel.setVerticalTextPosition(JLabel.BOTTOM);
         c.gridx = 3;
-        c.gridy = 2;
+        c.gridy = 4;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -103,7 +124,7 @@ public class ClockGui {
             }
         });
         c.gridx = 3;
-        c.gridy = 3;
+        c.gridy = 5;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -113,7 +134,7 @@ public class ClockGui {
         blueSliderLabel.setVerticalAlignment(JLabel.BOTTOM);
         blueSliderLabel.setVerticalTextPosition(JLabel.BOTTOM);
         c.gridx = 3;
-        c.gridy = 4;
+        c.gridy = 6;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -135,7 +156,7 @@ public class ClockGui {
             }
         });
         c.gridx = 3;
-        c.gridy = 5;
+        c.gridy = 7;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -145,7 +166,7 @@ public class ClockGui {
         portConnectionLabel.setVerticalAlignment(JLabel.BOTTOM);
         portConnectionLabel.setVerticalTextPosition(JLabel.BOTTOM);
         c.gridx = 3;
-        c.gridy = 6;
+        c.gridy = 8;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -154,7 +175,7 @@ public class ClockGui {
         //create portlist dropdown
         JComboBox<String> portList = new JComboBox<String>();
         c.gridx = 3;
-        c.gridy = 7;
+        c.gridy = 9;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -164,7 +185,6 @@ public class ClockGui {
         SerialPort[] portNames = SerialPort.getCommPorts();
         for(int i = 0; i < portNames.length; i++) {
             portList.addItem(portNames[i].getSystemPortName());
-            System.out.println(portNames[i].getSystemPortName());
             if (portNames[i].getSystemPortName().equals("cu.wchusbserial1410")) {
                 portList.setSelectedItem(portNames[i].getSystemPortName());
             }
@@ -174,7 +194,7 @@ public class ClockGui {
         JButton connectButton = new JButton("Connect");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
-        c.gridy = 8;
+        c.gridy = 10;
         c.gridheight = 1;
         c.gridwidth = 1;
         c.weightx = 0.1;
@@ -185,101 +205,40 @@ public class ClockGui {
                 if(connectButton.getText().equals("Connect")) {
                     // attempt to connect to the serial port
                     chosenPort = SerialPort.getCommPort(portList.getSelectedItem().toString());
+                    animation = animationList.getSelectedItem().toString();
                     chosenPort.setBaudRate(9600);
                     chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
                     if(chosenPort.openPort()) {
-                        connectButton.setText("Disconnect");
+                        connectButton.setText("Update");
                         portList.setEnabled(false);
-
+                        // wait for arduino to reboot cause of new port connection
+                        try {
+                            Thread.sleep(6000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
                         // create a new thread for sending data to the arduino
-                        Thread thread = new Thread(){
-                            @Override public void run() {
-                                // wait after connecting, so the bootloader can finish
-                                try {Thread.sleep(6000); } catch(Exception e) {}
-                                // send text to the arduino
-                                PrintWriter output = new PrintWriter(chosenPort.getOutputStream());
-
-                                // put the arduino in startUpMode
-                                System.out.println("Putting into setUpMode");
-                                System.out.println("4:");
-                                output.print("4:");
-                                output.flush();
-                                // TODO: SEND UNTIL WE GET POSITIVE RESPONSE BACK FROM ARDUINO
-
-                                try {Thread.sleep(1000); } catch(Exception e) {}
-
-                                // get the current time + 1 minute to send
-                                Date date = new Date();
-                                date = new Date(date.getTime() + 60000); // add 1 minute to the time
-                                String strDateFormat = "hh:mma";
-                                DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-                                String currentTime= dateFormat.format(date);
-                                System.out.println("1: " + currentTime);
-                                // actually send the current time
-                                output.print("1: " + currentTime);
-                                output.flush();
-                                try {Thread.sleep(1000); } catch(Exception e) {}
-
-                                // send LED commands
-                                String ledCommand = "2:";
-                                // send first 2 numbers
-                                for (int i = 0; i < 9; i++) {
-                                    // ledCommand += ((i * 3) + ",");
-                                    ledCommand += (clock.segments.get(i).toString());
-
-                                    // ledCommand += ((i * 3 + 1) + ",");
-                                    ledCommand += (clock.segments.get(i).toString());
-
-                                    // ledCommand += ((i * 3 + 2) + ",");
-                                    ledCommand += (clock.segments.get(i).toString());
-                                }
-
-                                // send colon
-                                // ledCommand += ((27) + ","); // LED #30
-                                ledCommand += (clock.segments.get(9).toString());
-
-                                // ledCommand += ((28) + ","); //LED #31
-                                ledCommand += (clock.segments.get(10).toString());
-
-
-                                //last 2 numbers
-                                for (int i = 11; i < 25; i++) {
-                                    // ledCommand += ((i * 3 - 4) + ",");
-                                    ledCommand += (clock.segments.get(i).toString());
-
-                                    // ledCommand += ((i * 3 - 3) + ",");
-                                    ledCommand += (clock.segments.get(i).toString());
-
-                                    // ledCommand += ((i * 3 - 2) + ",");
-                                    ledCommand += (clock.segments.get(i).toString());
-                                }
-
-                                // AM/PM and reverse order Sat - Sun
-                                for (int i = 25; i < 34; i++) {
-                                    // ledCommand += ((46 + i) + ","); //LED #74 - 82
-                                    ledCommand += (clock.segments.get(i).toString());
-                                }
-                                System.out.println(ledCommand);
-                                output.print(ledCommand);
-                                output.flush();
-                                try {Thread.sleep(2000); } catch(Exception e) {}
-
-                                // take arduino out of startup mode
-                                System.out.println("5:");
-                                System.out.println("taking out of setUpMode");
-                                output.print("5:");
-                                output.flush();
-
-                                try {Thread.sleep(1000); } catch(Exception e) {}
-                            }
-                        };
+                        thread = new UpdateColors(clock, chosenPort, animation);
                         thread.start();
                     }
                 } else {
-                    // disconnect from the serial port
-                    chosenPort.closePort();
-                    portList.setEnabled(true);
-                    connectButton.setText("Connect");
+                    // old disconnect from the serial port code
+                    // chosenPort.closePort();
+                    // portList.setEnabled(true);
+                    // connectButton.setText("Connect");
+
+                    // -------------------------------------
+                    // stop old run and run with new clock code
+                    thread.kill();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                    animation = animationList.getSelectedItem().toString();
+                    thread = new UpdateColors(clock, chosenPort, animation);
+                    thread.start();
+
                 }
             }
         });

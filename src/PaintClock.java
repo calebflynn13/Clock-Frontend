@@ -25,7 +25,7 @@ public class PaintClock extends JPanel implements MouseListener {
             segments.add(new LineSegment(i));
         }
         // initialize AM PM and days of week
-        for (int i = 25; i <= 33; i++)
+        for (int i = 25; i <= 27; i++)
             segments.add(new Text(i));
     }
 
@@ -163,25 +163,6 @@ public class PaintClock extends JPanel implements MouseListener {
                 windowPadding + 3* numberPadding);
         segments.get(26).drawString(g2, "PM", windowPadding + numberWidth + numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - numberPadding,
                 windowPadding + numberHeight * 2 + numberPadding * 3);
-
-        /**
-         * Saturday - Sunday right to left
-         */
-
-        segments.get(27).drawString(g2, "Sat", (int)((windowPadding + numberWidth + numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - numberPadding)),
-                windowPadding + numberHeight * 3 + numberPadding * 3);
-        segments.get(28).drawString(g2, "Fri", (windowPadding + numberWidth + 2 * numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - numberPadding - numberWidth) + numberPadding,
-                windowPadding + numberHeight * 3 + numberPadding * 3);
-        segments.get(29).drawString(g2, "Thu", (windowPadding + numberWidth + numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - numberPadding - 2*numberWidth) + numberPadding * 2,
-                windowPadding + numberHeight * 3 + numberPadding * 3);
-        segments.get(30).drawString(g2, "Wed", (windowPadding + numberWidth + numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - 4* numberPadding - 3*numberWidth) + numberPadding * 2,
-                windowPadding + numberHeight * 3 + numberPadding * 3);
-        segments.get(31).drawString(g2, "Tue", (windowPadding + numberWidth + numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - 5* numberPadding - 4*numberWidth) + numberPadding * 2,
-                windowPadding + numberHeight * 3 + numberPadding * 3);
-        segments.get(32).drawString(g2, "Mon", (windowPadding + numberWidth + numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - 5* numberPadding - 5*numberWidth) + numberPadding * 2,
-                windowPadding + numberHeight * 3 + numberPadding * 3);
-        segments.get(33).drawString(g2, "Sun", (windowPadding + numberWidth + numberPadding * 2 + (3 * (numberWidth + 11 * numberPadding)) - numberWidth - 5* numberPadding - 6*numberWidth) + numberPadding * 2,
-                windowPadding + numberHeight * 3 + numberPadding * 3);
     }
 
     public ArrayList<LineSegment> getSelected() {
