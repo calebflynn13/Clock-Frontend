@@ -92,8 +92,9 @@ public class UpdateColors extends Thread{
                     ledCommand += (clock.segments.get(i).toString());
                 }
 
-                // AM/PM and reverse order Sat - Sun
+                // AM/PM
                 for (int i = 25; i < 27; i++) {
+                    ledCommand += (clock.segments.get(i).toString());
                     ledCommand += (clock.segments.get(i).toString());
                 }
                 System.out.println(ledCommand);

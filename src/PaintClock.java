@@ -49,17 +49,18 @@ public class PaintClock extends JPanel implements MouseListener {
         /**
          * First number:
          */
-        // top right
+        // bottom-right
         segments.get(0).drawLine(g2, windowPadding + numberWidth + numberPadding * 2 + (0 * (numberWidth + 9 * numberPadding)) - numberWidth - numberPadding,
+                windowPadding + numberHeight + numberPadding * 3,
+                windowPadding + numberWidth + numberPadding * 2 + (0 * (numberWidth + 9 * numberPadding)) - numberWidth - numberPadding,
+                windowPadding + numberHeight * 2 + numberPadding * 3);
+
+        // top right
+        segments.get(1).drawLine(g2, windowPadding + numberWidth + numberPadding * 2 + (0 * (numberWidth + 9 * numberPadding)) - numberWidth - numberPadding,
                 windowPadding + numberPadding,
                 windowPadding + numberWidth + numberPadding * 2 + (0 * (numberWidth + 9 * numberPadding)) - numberWidth - numberPadding,
                 windowPadding + numberPadding + numberWidth);
 
-        // bottom-right
-        segments.get(1).drawLine(g2, windowPadding + numberWidth + numberPadding * 2 + (0 * (numberWidth + 9 * numberPadding)) - numberWidth - numberPadding,
-                windowPadding + numberHeight + numberPadding * 3,
-                windowPadding + numberWidth + numberPadding * 2 + (0 * (numberWidth + 9 * numberPadding)) - numberWidth - numberPadding,
-                windowPadding + numberHeight * 2 + numberPadding * 3);
 
         /**
          * Second number:
