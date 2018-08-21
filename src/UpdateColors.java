@@ -118,12 +118,19 @@ public class UpdateColors extends Thread{
         }
         if (isAlive) {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(5000);
             } catch (Exception e) {
             }
-            System.out.println("6:" + timer);
-            output.print("6:" + timer);
-            output.flush();
+            if (!timer.equals("")) {
+                System.out.println("6:" + timer);
+                output.print("6:" + timer);
+                output.flush();
+            }
+            else {
+                System.out.println("7:");
+                output.print("7:"); // return to clock mode if in timer mode
+                output.flush();
+            }
         }
         if (isAlive) {
             try {
