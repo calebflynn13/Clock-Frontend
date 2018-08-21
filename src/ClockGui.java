@@ -4,10 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 public class ClockGui {
 
@@ -18,6 +15,8 @@ public class ClockGui {
     static JSlider blueSlider;
     static UpdateColors thread;
     static String animation;
+    static String timerText;
+    static boolean timerEnabled = false;
 
     public static void main(String[] args) {
         JFrame window = new JFrame();
@@ -34,7 +33,7 @@ public class ClockGui {
         clock = new PaintClock();
         c.gridx = 0;
         c.gridy = 0;
-        c.gridheight = 11;
+        c.gridheight = 13;
         c.gridwidth = 3;
         c.weightx = 1;
         c.weighty = 1;
@@ -46,8 +45,8 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 0;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(animationLabel, c);
 
         //create portlist dropdown
@@ -55,8 +54,8 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 1;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(animationList, c);
 
         // populate the drop-down box
@@ -70,8 +69,8 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 2;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         c.ipady = 20;
         pane.add(redSliderLabel, c);
         redSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 1);
@@ -93,8 +92,8 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 3;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         c.ipady = 0;
         pane.add(redSlider, c);
 
@@ -104,8 +103,8 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 4;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(greenSliderLabel, c);
         greenSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 1);
         greenSlider.addChangeListener(new ChangeListener() {
@@ -126,8 +125,8 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 5;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(greenSlider, c);
 
         JLabel blueSliderLabel = new JLabel("Blue", JLabel.CENTER);
@@ -136,8 +135,8 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 6;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(blueSliderLabel, c);
         blueSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 1);
         blueSlider.addChangeListener(new ChangeListener() {
@@ -158,27 +157,67 @@ public class ClockGui {
         c.gridx = 3;
         c.gridy = 7;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(blueSlider, c);
+
+        JLabel timerLabel = new JLabel("Set Timer (hh:mm:ss):", JLabel.CENTER);
+        timerLabel.setVerticalAlignment(JLabel.BOTTOM);
+        timerLabel.setVerticalTextPosition(JLabel.BOTTOM);
+        c.gridx = 3;
+        c.gridy = 8;
+        c.gridheight = 1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
+        pane.add(timerLabel, c);
+
+        Checkbox checkbox = new Checkbox("Enable Timer", false);
+        c.gridx = 3;
+        c.gridy = 9;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 0.05;
+        pane.add(checkbox, c);
+
+        JTextField timer = new JTextField("hh:mm:ss", 8);
+        timer.setEnabled(false);
+        checkbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    timer.setEnabled(true);
+                    timerEnabled = true;
+                    // TODO:
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    timer.setEnabled(false);
+                }
+            }
+        });
+        c.gridx = 4;
+        c.gridy = 9;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 0.05;
+        pane.add(timer, c);
 
         JLabel portConnectionLabel = new JLabel("Select Arduino Port:", JLabel.CENTER);
         portConnectionLabel.setVerticalAlignment(JLabel.BOTTOM);
         portConnectionLabel.setVerticalTextPosition(JLabel.BOTTOM);
         c.gridx = 3;
-        c.gridy = 8;
+        c.gridy = 10;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(portConnectionLabel, c);
 
         //create portlist dropdown
         JComboBox<String> portList = new JComboBox<String>();
         c.gridx = 3;
-        c.gridy = 9;
+        c.gridy = 11;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(portList, c);
 
         // populate the drop-down box
@@ -194,10 +233,10 @@ public class ClockGui {
         JButton connectButton = new JButton("Connect");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
-        c.gridy = 10;
+        c.gridy = 12;
         c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.1;
+        c.gridwidth = 2;
+        c.weightx = 0.05;
         pane.add(connectButton, c);
         connectButton.addActionListener(new ActionListener() {
             @Override
@@ -211,6 +250,12 @@ public class ClockGui {
                     if(chosenPort.openPort()) {
                         connectButton.setText("Update");
                         portList.setEnabled(false);
+                        if (timerEnabled) {
+                            timerText = timer.getText();
+                        }
+                        else {
+                            timerText = "";
+                        }
                         // wait for arduino to reboot cause of new port connection
                         try {
                             Thread.sleep(6000);
@@ -218,7 +263,7 @@ public class ClockGui {
                             e1.printStackTrace();
                         }
                         // create a new thread for sending data to the arduino
-                        thread = new UpdateColors(clock, chosenPort, animation);
+                        thread = new UpdateColors(clock, chosenPort, animation, timerText);
                         thread.start();
                     }
                 } else {
@@ -236,7 +281,7 @@ public class ClockGui {
                         e1.printStackTrace();
                     }
                     animation = animationList.getSelectedItem().toString();
-                    thread = new UpdateColors(clock, chosenPort, animation);
+                    thread = new UpdateColors(clock, chosenPort, animation, timerText);
                     thread.start();
 
                 }

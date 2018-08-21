@@ -14,10 +14,12 @@ public class UpdateColors extends Thread{
     boolean isAlive;
     PrintWriter output;
     String animation;
-    public UpdateColors(PaintClock clock, SerialPort chosenPort, String animation) {
+    String timer;
+    public UpdateColors(PaintClock clock, SerialPort chosenPort, String animation, String timer) {
         this.clock = clock;
         this.chosenPort = chosenPort;
         isAlive = true;
+        this.timer = timer;
         if (animation.equals("Solid Rainbow")) {
             this.animation = "3:1";
         }
@@ -41,13 +43,13 @@ public class UpdateColors extends Thread{
 
         if (isAlive) {
             try {
-                Thread.sleep(1500);
+                Thread.sleep(2000);
             } catch (Exception e) {
             }
 
             // get the current time + 1 minute to send
             Date date = new Date();
-            date = new Date(date.getTime() + 60000); // add 1 minute to the time
+            date = new Date(date.getTime()); // add 1 minute to the time
             String strDateFormat = "hh:mma";
             DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
             String currentTime = dateFormat.format(date);
@@ -59,7 +61,7 @@ public class UpdateColors extends Thread{
 
         if (isAlive) {
             try {
-                Thread.sleep(1500);
+                Thread.sleep(2000);
             } catch (Exception e) {
             }
             if (!animation.toLowerCase().equals("none")) {
@@ -104,7 +106,7 @@ public class UpdateColors extends Thread{
         }
         if (isAlive) {
             try {
-                Thread.sleep(1500);
+                Thread.sleep(5000);
             } catch (Exception e) {
             }
 
@@ -116,9 +118,17 @@ public class UpdateColors extends Thread{
         }
         if (isAlive) {
             try {
-                Thread.sleep(1500);
+                Thread.sleep(2000);
             } catch (Exception e) {
             }
+            System.out.println("6:" + timer);
+            output.print("6:" + timer);
+            output.flush();
+        }
+        if (isAlive) {
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {}
         }
     }
 
@@ -127,7 +137,7 @@ public class UpdateColors extends Thread{
         output.print("5:"); // turn LEDs back on
         output.flush();
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
