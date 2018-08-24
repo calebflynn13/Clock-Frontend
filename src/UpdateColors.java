@@ -49,8 +49,8 @@ public class UpdateColors extends Thread{
 
             // get the current time + 1 minute to send
             Date date = new Date();
-            date = new Date(date.getTime()); // add 1 minute to the time
-            String strDateFormat = "hh:mma";
+            date = new Date(date.getTime() + 5000);
+            String strDateFormat = "hh:mm:ss:a";
             DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
             String currentTime = dateFormat.format(date);
             System.out.println("1: " + currentTime);
