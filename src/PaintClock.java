@@ -44,7 +44,7 @@ public class PaintClock extends JPanel implements MouseListener {
         setBackground(Color.white);  // set background color for this JPanel
 
         //draw numbers:
-        g.setColor(Color.black); //TODO: CHANGE TO GET COLOR OF SPECIFIC PART
+        g.setColor(new Color(1,1,1)); //TODO: CHANGE TO GET COLOR OF SPECIFIC PART
 
         /**
          * First number:

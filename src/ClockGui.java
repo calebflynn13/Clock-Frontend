@@ -14,7 +14,7 @@ public class ClockGui {
     static JSlider greenSlider;
     static JSlider blueSlider;
     static JSlider brightnessSlider;
-    static int brightness = 255;
+    static int brightness = 192;
     static UpdateColors thread;
     static String animation;
     static String timerText;
@@ -75,7 +75,7 @@ public class ClockGui {
         c.weightx = 0.05;
         c.ipady = 20;
         pane.add(redSliderLabel, c);
-        redSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 1);
+        redSlider = new JSlider(JSlider.HORIZONTAL, 1, 255, 1);
         redSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -108,7 +108,7 @@ public class ClockGui {
         c.gridwidth = 4;
         c.weightx = 0.05;
         pane.add(greenSliderLabel, c);
-        greenSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 1);
+        greenSlider = new JSlider(JSlider.HORIZONTAL, 1, 255, 1);
         greenSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -140,7 +140,7 @@ public class ClockGui {
         c.gridwidth = 4;
         c.weightx = 0.05;
         pane.add(blueSliderLabel, c);
-        blueSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 1);
+        blueSlider = new JSlider(JSlider.HORIZONTAL, 1, 255, 1);
         blueSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -172,7 +172,7 @@ public class ClockGui {
         c.gridwidth = 4;
         c.weightx = 0.05;
         pane.add(brightnessSliderLabel, c);
-        brightnessSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 1);
+        brightnessSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 192);
         c.gridx = 4;
         c.gridy = 9;
         c.gridheight = 1;
@@ -305,6 +305,7 @@ public class ClockGui {
                     // attempt to connect to the serial port
                     chosenPort = SerialPort.getCommPort(portList.getSelectedItem().toString());
                     animation = animationList.getSelectedItem().toString();
+                    brightness = (int)brightnessSlider.getValue();
                     chosenPort.setBaudRate(9600);
                     chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
                     if(chosenPort.openPort()) {

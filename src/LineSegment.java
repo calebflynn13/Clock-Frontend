@@ -24,7 +24,7 @@ public class LineSegment {
         this.x2 = 0;
         this.y1 = 0;
         this.y2 = 0;
-        this.color = Color.black;
+        this.color = new Color(1,1,1);
     }
 
     public void drawLine(Graphics2D g2, int x1, int y1, int x2, int y2) {
@@ -83,9 +83,9 @@ public class LineSegment {
 
     public String toString() {
         // return string "redColor, greenColor, blueColor"
-        return  String.format("%02X", getColor().getRed()) +
-                String.format("%02X", getColor().getGreen()) +
-                String.format("%02X", getColor().getBlue());
+        return "" + (char)(getColor().getRed()) +
+                (char)(getColor().getGreen()) +
+                (char)(getColor().getBlue());
     }
 
 }
