@@ -15,11 +15,14 @@ public class UpdateColors extends Thread{
     PrintWriter output;
     String animation;
     String timer;
-    public UpdateColors(PaintClock clock, SerialPort chosenPort, String animation, String timer) {
+    int brightness;
+
+    public UpdateColors(PaintClock clock, SerialPort chosenPort, String animation, String timer, int brightness) {
         this.clock = clock;
         this.chosenPort = chosenPort;
         isAlive = true;
         this.timer = timer;
+        this.brightness = brightness;
         if (animation.equals("Solid Rainbow")) {
             this.animation = "3:1";
         }
@@ -39,6 +42,17 @@ public class UpdateColors extends Thread{
             output.print("4:");
             output.flush();
             // TODO: SEND UNTIL WE GET POSITIVE RESPONSE BACK FROM ARDUINO
+        }
+
+        if (isAlive) {
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+            }
+            System.out.println("setting brightness to " + brightness);
+            System.out.println("8:" + brightness);
+            output.print("8:" + brightness);
+            output.flush();
         }
 
         if (isAlive) {
