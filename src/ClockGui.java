@@ -25,6 +25,7 @@ public class ClockGui {
         window.setTitle("Set Clock Colors");
         window.setSize(1300, 650);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
 
         Container pane = window.getContentPane();
         pane.setLayout(new GridBagLayout());

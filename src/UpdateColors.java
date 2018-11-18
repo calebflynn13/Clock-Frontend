@@ -19,6 +19,7 @@ public class UpdateColors extends Thread{
     int brightness;
 
     public UpdateColors(PaintClock clock, SerialPort chosenPort, String animation, String timer, int brightness) {
+
         this.clock = clock;
         this.chosenPort = chosenPort;
         isAlive = true;
@@ -127,7 +128,7 @@ public class UpdateColors extends Thread{
             }
             if (isAlive) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (Exception e) {
                 }
 
@@ -139,7 +140,7 @@ public class UpdateColors extends Thread{
             }
             if (isAlive) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (Exception e) {
                 }
                 if (!timer.equals("")) {

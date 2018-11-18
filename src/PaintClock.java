@@ -19,6 +19,7 @@ public class PaintClock extends JPanel implements MouseListener {
     public ArrayList<LineSegment> segments = new ArrayList<LineSegment>();
 
     public PaintClock() {
+
         addMouseListener(this);
         // initialize numbers
         for (int i = 0; i <= 24; i++) {
